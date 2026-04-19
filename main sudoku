@@ -18,7 +18,7 @@ def draw_grid(screen):
 def main():
     try:
         pygame.init()
-        # screen.blit(select23, select23.get_rect(topleft=(x,y)))
+        # screen.blit(mole_image, mole_image.get_rect(topleft=(x,y)))
         screen = pygame.display.set_mode((576, 576))
         clock = pygame.time.Clock()
         running = True
@@ -26,13 +26,27 @@ def main():
         select23 = (0,0)
         number = []
         what = []
-        while running:
+        mode = 0
+        completed = False # win or lose
+        while running: #start screen
+            screen.fill("white")
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-            screen.fill("white")
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if (1,1) == (event.pos[0] // 64, event.pos[1] // 64):
+                        mode = "easy"
+                        running = False
+                        # use to set the select position of the start buttons recode
+                        # the numbers to set the area of each button
+                    elif (1,1) == (event.pos[0] // 273, event.pos[1] // 235):
+                        mode = "medium"
+                        running = False
+                    elif (1, 1) == (event.pos[0] // 273, event.pos[1] // 235):
+                        mode = "hard"
+                        running = False
         running = True
-        while running:
+        while running: #game
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -50,6 +64,19 @@ def main():
             )
             pygame.display.flip()
             clock.tick(60)
+
+        running = True
+        if completed == False:
+            while running:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+
+        elif completed == True:
+            while running:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
     finally:
         pygame.quit()
 
