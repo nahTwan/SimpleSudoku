@@ -3,6 +3,8 @@ import random
 
 def draw_grid(screen):
     # draw - lines
+    # h 544 A 51
+    # W 460 e 96 m  115 h 94
     for i in range(9):
         if i == 0 or i == 3 or i == 6 or i == 9:
             pygame.draw.line(screen, "black", (i * 64, 0), (i * 64, 576))
@@ -18,15 +20,16 @@ def draw_grid(screen):
 def main():
     try:
         pygame.init()
-        # screen.blit(mole_image, mole_image.get_rect(topleft=(x,y)))
         screen = pygame.display.set_mode((576, 576))
         clock = pygame.time.Clock()
         running = True
         test_block = pygame.image.load("test_block.png")
+        sudoku_start  = pygame.image.load("sudoku_start.png")
+        sudoku_win = pygame.image.load("sudoku_win.png")
+        sudoku_lose = pygame.image.load("sudoku_lose.png")
         select23 = (0,0)
-        number = []
-        what = []
         mode = 0
+        screenSet = (0,0)
         completed = False # win or lose
         while running: #start screen
             screen.fill("white")
@@ -34,18 +37,26 @@ def main():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if (1,1) == (event.pos[0] // 64, event.pos[1] // 64):
+                    if (2,10) == (event.pos[0] // 96, event.pos[1] // 51):
                         mode = "easy"
                         running = False
                         # use to set the select position of the start buttons recode
                         # the numbers to set the area of each button
-                    elif (1,1) == (event.pos[0] // 273, event.pos[1] // 235):
+                    elif (3,10) == (event.pos[0] // 115, event.pos[1] // 51):
                         mode = "medium"
                         running = False
-                    elif (1, 1) == (event.pos[0] // 273, event.pos[1] // 235):
+                    elif (4, 10) == (event.pos[0] // 96, event.pos[1] // 51):
                         mode = "hard"
                         running = False
+            screen.blit(
+                sudoku_start,
+                sudoku_start.get_rect(topleft=(screenSet[0] * 64, screenSet[1] * 64))
+            )
+            pygame.display.flip()
+            clock.tick(60)
         running = True
+
+
         while running: #game
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -66,17 +77,30 @@ def main():
             clock.tick(60)
 
         running = True
-        if completed == False:
-            while running:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        running = False
+        if completed == False: ## game lose // 45 8   354 // 116 3
 
-        elif completed == True:
             while running:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
+                screen.blit(
+                    sudoku_lose,
+                    sudoku_lose.get_rect(topleft=(screenSet[0] * 64, screenSet[1] * 64))
+                )
+                pygame.display.flip()
+                clock.tick(60)
+
+        elif completed == True: # game win
+            while running:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                screen.blit(
+                    sudoku_win,
+                    sudoku_win.get_rect(topleft=(screenSet[0] * 64, screenSet[1] * 64))
+                )
+                pygame.display.flip()
+                clock.tick(60)
     finally:
         pygame.quit()
 
