@@ -89,7 +89,7 @@ def main():
                         running = False
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         if 3 == round(event.pos[1] / 128) and round(event.pos[0] / 250) == 1:
-                            print("restart")  #remove me once done
+                            main()
                             running = False
                 screen.blit(
                     sudoku_lose,
