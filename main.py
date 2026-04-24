@@ -212,6 +212,10 @@ def main():
                     (x,y) = (event.pos[0] // 64, event.pos[1] // 64)
                     select23 = (event.pos[0] // 64, event.pos[1] // 64)
 
+                    if 192 <= event.pos[0] <= 192+192 and 576 <= event.pos[1] <= 704:
+                        main()
+                        running = False
+
                 elif event.type == pygame.KEYDOWN:
                     col, row = select23
                     if event.key in range(pygame.K_1, pygame.K_9 + 1):
