@@ -55,7 +55,7 @@ class Board:
 
     def _generate_puzzle(self, difficulty):
         board = self._generate_solved_board()
-        removals = {"easy": 35, "medium": 45, "hard": 55}.get(difficulty, 35)
+        removals = {"easy": 30, "medium": 40, "hard": 50}.get(difficulty, 30)
 
         cells = [(r, c) for r in range(9) for c in range(9)]
         random.shuffle(cells)
@@ -82,7 +82,8 @@ class Board:
         if self.board[row][col] == 0:
             self.player_board[row][col] = 0
 
-    def get_number_color(self, row, col):
+    def get_number_color(self, row, col, what = 0):
+        what = what
         num = self.player_board[row][col]
         if num == 0:
             return None
@@ -95,28 +96,8 @@ class Board:
             if r != row and (self.board[r][col] == num or self.player_board[r][col] == num):
                 valid = False
         box_r, box_c = 3 * (row // 3), 3 * (col // 3)
-        for r in range(box_r, box_r + 3):
-            for c in range(box_c, box_c + 3):
-                if (r != row or c != col) and (self.board[r][c] == num or self.player_board[r][c] == num):
-                    valid = False
-        if not valid:
-            return "red"
-
-        row_nums = [self.board[row][c] if self.board[row][c] != 0 else self.player_board[row][c] for c in range(9)]
-        if sorted(row_nums) == list(range(1, 10)):
+        if what == 1:
             return "green"
-
-        col_nums = [self.board[r][col] if self.board[r][col] != 0 else self.player_board[r][col] for r in range(9)]
-        if sorted(col_nums) == list(range(1, 10)):
-            return "green"
-
-        box_nums = []
-        for r in range(box_r, box_r + 3):
-            for c in range(box_c, box_c + 3):
-                box_nums.append(self.board[r][c] if self.board[r][c] != 0 else self.player_board[r][c])
-        if sorted(box_nums) == list(range(1, 10)):
-            return "green"
-
         return "blue"
 
     def check_win(self):
@@ -170,7 +151,14 @@ def main():
     try:
         pygame.init()
         font = pygame.font.SysFont("Arial", 40)
-        screen = pygame.display.set_mode((576, 576))
+        screen = pygame.display.set_mode((576, 704))
+        buttons = [1,1]
+        sudoku_reset = pygame.image.load("sudoku_reset.png")
+        sudoku_restart = pygame.image.load("sudoku_restart.png")
+        sudoku_exit = pygame.image.load("sudoku_exit.png")
+        screen.blit(sudoku_reset, sudoku_reset.get_rect(topleft=(buttons[0] * 64, buttons[1] * 2 * 64)))
+        screen.blit(sudoku_restart, sudoku_restart.get_rect(topleft=(buttons[0] * 64, buttons[1] * 9 * 64)))
+        screen.blit(sudoku_exit, sudoku_exit.get_rect(topleft=(buttons[0] * 64, buttons[1] * 9 * 64)))
         clock = pygame.time.Clock()
         running = True
         test_block = pygame.image.load("test_block.png")
@@ -206,6 +194,9 @@ def main():
                         print(mode)
                         running = False
             screen.blit(sudoku_start, sudoku_start.get_rect(topleft=(screenSet[0] * 64, screenSet[1] * 64)))
+            screen.blit(sudoku_reset, sudoku_reset.get_rect(topleft=(0, buttons[1] * 9 * 64)))
+            screen.blit(sudoku_restart, sudoku_restart.get_rect(topleft=(192, buttons[1] * 9 * 64)))
+            screen.blit(sudoku_exit, sudoku_exit.get_rect(topleft=(384, buttons[1] * 9 * 64)))
             pygame.display.flip()
             clock.tick(60)
 
@@ -213,6 +204,7 @@ def main():
         game = Board(mode)
 
         while running:  # game
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -244,6 +236,11 @@ def main():
                         if x >= 0:
                             y += 1
                             select23 = (x,y)
+                    if keys[pygame.K_RETURN]:
+                        what = 1
+                        Board.get_number_color(row,col,what)
+                        what = 0
+
             if game.check_win():
                 completed = True
                 running = False
@@ -251,6 +248,9 @@ def main():
             game.draw_grid(screen)
             game.draw(screen, font)
             screen.blit(test_block, test_block.get_rect(topleft=(select23[0] * 64, select23[1] * 64)))
+            screen.blit(sudoku_reset, sudoku_reset.get_rect(topleft=(0, buttons[1] * 9 * 64)))
+            screen.blit(sudoku_restart, sudoku_restart.get_rect(topleft=(192, buttons[1] * 9 * 64)))
+            screen.blit(sudoku_exit, sudoku_exit.get_rect(topleft=(384, buttons[1] * 9 * 64)))
             pygame.display.flip()
             clock.tick(60)
 
