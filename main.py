@@ -177,7 +177,9 @@ def main():
         sudoku_start = pygame.image.load("sudoku_start.png")
         sudoku_win = pygame.image.load("sudoku_win.png")
         sudoku_lose = pygame.image.load("sudoku_lose.png")
-        select23 = (0, 0)
+        x = 0
+        y = 0
+        select23 = (x, y)
         mode = 0
         screenSet = (0, 0)
         completed = False
@@ -215,7 +217,9 @@ def main():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
+                    (x,y) = (event.pos[0] // 64, event.pos[1] // 64)
                     select23 = (event.pos[0] // 64, event.pos[1] // 64)
+
                 elif event.type == pygame.KEYDOWN:
                     col, row = select23
                     if event.key in range(pygame.K_1, pygame.K_9 + 1):
@@ -223,6 +227,23 @@ def main():
                     elif event.key in (pygame.K_BACKSPACE, pygame.K_DELETE):
                         game.erase(row, col)
                     test_block = pygame.image.load("test_block.png")
+                    keys = pygame.key.get_pressed()
+                    if keys[pygame.K_LEFT]:
+                        if x >= 0:
+                            x -= 1
+                            select23 = (x,y)
+                    if keys[pygame.K_RIGHT]:
+                        if x <= 9:
+                            x +=1
+                            select23 = (x,y)
+                    if keys[pygame.K_UP]:
+                        if x <= 9:
+                            y -= 1
+                            select23 = (x,y)
+                    if keys[pygame.K_DOWN]:
+                        if x >= 0:
+                            y += 1
+                            select23 = (x,y)
             if game.check_win():
                 completed = True
                 running = False
